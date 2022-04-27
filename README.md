@@ -1,5 +1,4 @@
 # 💙 엣햄 💙
-<br/>
 <img src="https://user-images.githubusercontent.com/77167694/165472890-b648f511-48d1-4c15-8366-eb34fb6b07e3.png" width="800" height="190"/>
 </br>
 
