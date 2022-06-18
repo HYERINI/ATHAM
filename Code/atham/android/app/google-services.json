@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "756006585440",
+    "project_id": "smu-clothes-b872b",
+    "storage_bucket": "smu-clothes-b872b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:756006585440:android:d042afa674700f98196f05",
+        "android_client_info": {
+          "package_name": "com.example.atham"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "756006585440-ksensvripirp5qh70quibgd70g9lu8fn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAeUGi-VWtQA9Mp_BTdgcZCcj8YOGAR-k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "756006585440-ksensvripirp5qh70quibgd70g9lu8fn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
