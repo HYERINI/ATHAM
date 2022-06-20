@@ -9,6 +9,8 @@ class Clothes {
   final String clothesPhotoUrl;
   final String nowCategory;
   final String mainCategory;
+  final String subCategory;
+  final int usedTimes;
   final int maxT;
   final int minT;
 
@@ -21,6 +23,8 @@ class Clothes {
     required this.clothesPhotoUrl,
     required this.nowCategory,
     required this.mainCategory,
+    required this.subCategory,
+    required this.usedTimes,
     required this.maxT,
     required this.minT,
   });
@@ -36,6 +40,8 @@ class Clothes {
         clothesPhotoUrl: snapshot['clothesPhotoUrl'],
         nowCategory: snapshot['nowCategory'],
         mainCategory: snapshot['mainCategory'],
+        subCategory: snapshot['subCategory'],
+        usedTimes: snapshot['usedTimes'],
         maxT: snapshot['maxT'],
         minT: snapshot['mixT']);
   }
@@ -49,6 +55,8 @@ class Clothes {
         'clothesPhotoUrl': clothesPhotoUrl,
         'nowCategory': nowCategory,
         'mainCategory': mainCategory,
+        'subCategory': subCategory,
+        'usedTimes': usedTimes,
         'maxT': maxT,
         'minT': minT,
       };

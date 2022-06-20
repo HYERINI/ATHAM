@@ -1,5 +1,6 @@
 import 'package:atham/screens/add_post_screen.dart';
 import 'package:atham/screens/another_profile_screen.dart';
+import 'package:atham/screens/closet_screen.dart';
 import 'package:atham/screens/liked_post_screen.dart';
 import 'package:atham/screens/profile_screen.dart';
 import 'package:atham/screens/today_post_screen.dart';
@@ -103,7 +104,7 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
           const WhenPostScreen(),
           const AddPostScreen(),
           const LikedPostScreen(),
-          ProfileScreen(
+          ClosetScreen(
             uid: FirebaseAuth.instance.currentUser!.uid,
           ),
         ],

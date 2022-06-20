@@ -17,15 +17,15 @@ import 'package:atham/utils/utils.dart';
 import 'package:atham/widgets/follow_button.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ProfileScreen extends StatefulWidget {
+class ClosetScreen extends StatefulWidget {
   final String uid;
-  const ProfileScreen({Key? key, required this.uid}) : super(key: key);
+  const ClosetScreen({Key? key, required this.uid}) : super(key: key);
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  _ClosetScreenState createState() => _ClosetScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ClosetScreenState extends State<ClosetScreen> {
   var userData = {};
   int postLen = 0;
   int followers = 0;
@@ -111,89 +111,89 @@ class _ProfileScreenState extends State<ProfileScreen> {
             body: ListView(
               children: [
 
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: Colors.grey,
-                            backgroundImage: NetworkImage(
-                              userData["photoUrl"],
-                            ),
-                            radius: 40,
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    buildTouchColumn(postLen, "posts"),
-                                    buildStatColumn(followers, "카테고리 수"),
-                                    buildStatColumn(following, "좋아요 누른 수"),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    FirebaseAuth.instance.currentUser!.uid ==
-                                            widget.uid
-                                        ? FollowButton(
-                                            text: 'Sign Out',
-                                            backgroundColor:
-                                                mobileBackgroundColor,
-                                            textColor: primaryColor,
-                                            borderColor: Colors.grey,
-                                            function: () async {
-                                              await AuthMethods().logOut();
-                                              Navigator.of(context)
-                                                  .pushReplacement(
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const LoginScreen(),
-                                                ),
-                                              );
-                                            },
-                                          )
-                                        : Text(
-                                            "===")
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.only(
-                          top: 15,
-                        ),
-                        child: Text(
-                          userData['username'],
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.only(
-                          top: 1,
-                        ),
-                        child: Text(
-                          userData['bio'],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.all(16),
+                //   child: Column(
+                //     children: [
+                //       Row(
+                //         children: [
+                //           CircleAvatar(
+                //             backgroundColor: Colors.grey,
+                //             backgroundImage: NetworkImage(
+                //               userData["photoUrl"],
+                //             ),
+                //             radius: 40,
+                //           ),
+                //           Expanded(
+                //             flex: 1,
+                //             child: Column(
+                //               children: [
+                //                 Row(
+                //                   mainAxisSize: MainAxisSize.max,
+                //                   mainAxisAlignment:
+                //                       MainAxisAlignment.spaceEvenly,
+                //                   children: [
+                //                     buildTouchColumn(postLen, "posts"),
+                //                     buildStatColumn(followers, "카테고리 수"),
+                //                     buildStatColumn(following, "좋아요 누른 수"),
+                //                   ],
+                //                 ),
+                //                 Row(
+                //                   mainAxisAlignment:
+                //                       MainAxisAlignment.spaceEvenly,
+                //                   children: [
+                //                     FirebaseAuth.instance.currentUser!.uid ==
+                //                             widget.uid
+                //                         ? FollowButton(
+                //                             text: 'Sign Out',
+                //                             backgroundColor:
+                //                                 mobileBackgroundColor,
+                //                             textColor: primaryColor,
+                //                             borderColor: Colors.grey,
+                //                             function: () async {
+                //                               await AuthMethods().logOut();
+                //                               Navigator.of(context)
+                //                                   .pushReplacement(
+                //                                 MaterialPageRoute(
+                //                                   builder: (context) =>
+                //                                       const LoginScreen(),
+                //                                 ),
+                //                               );
+                //                             },
+                //                           )
+                //                         : Text(
+                //                             "===")
+                //                   ],
+                //                 ),
+                //               ],
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //       Container(
+                //         alignment: Alignment.centerLeft,
+                //         padding: const EdgeInsets.only(
+                //           top: 15,
+                //         ),
+                //         child: Text(
+                //           userData['username'],
+                //           style: TextStyle(
+                //             fontWeight: FontWeight.bold,
+                //           ),
+                //         ),
+                //       ),
+                //       Container(
+                //         alignment: Alignment.centerLeft,
+                //         padding: const EdgeInsets.only(
+                //           top: 1,
+                //         ),
+                //         child: Text(
+                //           userData['bio'],
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 
                 const Divider(),
                 Padding(
