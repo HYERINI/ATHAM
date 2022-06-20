@@ -8,6 +8,9 @@ class Clothes {
   final DateTime datePublished;
   final String clothesPhotoUrl;
   final String nowCategory;
+  final String mainCategory;
+  final int maxT;
+  final int minT;
 
   const Clothes({
     required this.talking,
@@ -16,7 +19,10 @@ class Clothes {
     required this.clothesId,
     required this.datePublished,
     required this.clothesPhotoUrl,
-    required this.nowCategory
+    required this.nowCategory,
+    required this.mainCategory,
+    required this.maxT,
+    required this.minT,
   });
 
   static Clothes fromSnap(DocumentSnapshot snap) {
@@ -28,7 +34,10 @@ class Clothes {
         clothesId: snapshot["clothesId"],
         datePublished: snapshot["datePublished"],
         clothesPhotoUrl: snapshot['clothesPhotoUrl'],
-        nowCategory: snapshot['nowCategory']);
+        nowCategory: snapshot['nowCategory'],
+        mainCategory: snapshot['mainCategory'],
+        maxT: snapshot['maxT'],
+        minT: snapshot['mixT']);
   }
 
   Map<String, dynamic> toJson() => {
@@ -38,6 +47,9 @@ class Clothes {
         "clothesId": clothesId,
         "datePublished": datePublished,
         'clothesPhotoUrl': clothesPhotoUrl,
-        'nowCategory': nowCategory
+        'nowCategory': nowCategory,
+        'mainCategory': mainCategory,
+        'maxT': maxT,
+        'minT': minT,
       };
 }

@@ -42,6 +42,7 @@ dependencies:
   uuid: ^3.0.6
   flutter_svg: ^1.1.0
   image_picker: ^0.8.5+3
+  numberpicker: ^2.1.1
 
 dev_dependencies:
   flutter_test:

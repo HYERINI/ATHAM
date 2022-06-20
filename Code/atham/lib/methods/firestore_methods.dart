@@ -178,7 +178,7 @@ class fireStoreMethods {
   //이제는 옷장 관련 기능
 
   Future<String> uploadClothes(String talking, Uint8List file, String uid,
-      String clothesName, String nowCategory) async {
+      String clothesName, String nowCategory, String mainCategory, int maxT, int minT) async {
     String stateText = "문제가 생긴 것 같습니다ㅠ";
     try {
       String photoUrl =
@@ -192,7 +192,11 @@ class fireStoreMethods {
           clothesId: clothesId,
           datePublished: DateTime.now(),
           clothesPhotoUrl: photoUrl,
-          nowCategory: nowCategory);
+          nowCategory: nowCategory,
+          mainCategory: mainCategory,
+          maxT: maxT,
+          minT: minT);
+          
       _firestore
           .collection('users')
           .doc(uid)

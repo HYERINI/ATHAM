@@ -6,6 +6,7 @@ import 'package:atham/providers/user_provider.dart';
 import 'package:atham/methods/firestore_methods.dart';
 import 'package:atham/utils/colors.dart';
 import 'package:atham/utils/utils.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as p;
 
@@ -22,6 +23,16 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _clothesNameController = TextEditingController();
   final TextEditingController _nowCategoryController = TextEditingController();
+
+  var mainCategoryList = [
+    '상의',
+    '하의',
+    '신발',
+  ];
+
+  var selectedMainCategory = "상의";
+  var selectedMaxT = 10;
+  var selectedMinT = 0;
 
   _selectImage(BuildContext parentContext) async {
     return showDialog(
@@ -65,7 +76,15 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
     );
   }
 
-  void postClothes(String uid, String username, String profImage) async {
+  void postClothes(String uid, String username, String profImage,
+      String mainCategory, int maxT, int minT) async {
+    if (_descriptionController.text.isEmpty ||
+        _clothesNameController.text.isEmpty ||
+        _nowCategoryController.text.isEmpty) {
+      showSnackBar(context, "아직 입력하지 않는 정보가 있습니다!!!");
+      return;
+    }
+
     setState(() {
       isLoading = true;
     });
@@ -73,12 +92,14 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
     try {
       // upload to storage and db
       String res = await fireStoreMethods().uploadClothes(
-        _descriptionController.text,
-        _file!,
-        uid,
-        _clothesNameController.text,
-        _nowCategoryController.text,
-      );
+          _descriptionController.text,
+          _file!,
+          uid,
+          _clothesNameController.text,
+          _nowCategoryController.text,
+          mainCategory,
+          maxT,
+          minT);
       if (res == "success") {
         setState(() {
           isLoading = false;
@@ -145,13 +166,13 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
               centerTitle: false,
               actions: <Widget>[
                 TextButton(
-                  onPressed: () {
-                    postClothes(
+                  onPressed: () => postClothes(
                       userProvider.getUser.uid,
                       userProvider.getUser.username,
                       userProvider.getUser.photoUrl,
-                    );
-                  },
+                      selectedMainCategory,
+                      selectedMaxT,
+                      selectedMinT),
                   child: const Text(
                     "Add Clothes",
                     style: TextStyle(
@@ -182,9 +203,9 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
                       width: MediaQuery.of(context).size.width * 1,
                       child: TextField(
                         controller: _clothesNameController,
-                        decoration: const InputDecoration(
-                            hintText: "옷 이름을 입력하세요", border: InputBorder.none),
-                        maxLines: 8,
+                        decoration:
+                            const InputDecoration(hintText: "옷 이름을 입력하세요"),
+                        maxLines: 1,
                       ),
                     ),
                     SizedBox(
@@ -192,19 +213,83 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
                       child: TextField(
                         controller: _descriptionController,
                         decoration: const InputDecoration(
-                            hintText: "Write a caption...",
-                            border: InputBorder.none),
-                        maxLines: 8,
+                            hintText: "Write a caption..."),
+                        maxLines: 3,
                       ),
                     ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 1,
-                      child: TextField(
-                        controller: _nowCategoryController,
-                        decoration: const InputDecoration(
-                            hintText: "카테고리를 입력하세요", border: InputBorder.none),
-                        maxLines: 8,
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 1,
+                              child: DropdownButton(
+                                value: selectedMainCategory,
+                                items: mainCategoryList.map((String value) {
+                                  return DropdownMenuItem(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                                onChanged: (String? value) {
+                                  setState(() {
+                                    selectedMainCategory = value!;
+                                  });
+                                },
+                              )),
+                        ),
+                        Expanded(
+                          child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 1,
+                              child: TextField(
+                                controller: _nowCategoryController,
+                                decoration: const InputDecoration(
+                                    hintText: "카테고리를 입력하세요"),
+                                maxLines: 1,
+                              )),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 1,
+                            child: NumberPicker(
+                              value: selectedMinT,
+                              minValue: -100,
+                              maxValue: 100,
+                              step: 1,
+                              haptics: true,
+                              onChanged: (value) {
+                                if (selectedMaxT - value >= 0) {
+                                  setState(() {
+                                    selectedMinT = value;
+                                  });
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 1,
+                            child: NumberPicker(
+                              value: selectedMaxT,
+                              minValue: -100,
+                              maxValue: 100,
+                              step: 1,
+                              haptics: true,
+                              onChanged: (value) {
+                                if (value - selectedMinT >= 0) {
+                                  setState(() {
+                                    selectedMaxT = value;
+                                  });
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(
                       child: AspectRatio(
