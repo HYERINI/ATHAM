@@ -37,7 +37,6 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
     '홈웨어',
     '주얼리'  
   ];
-
   List<String> subCategoryList = [];
 
   String selectedMainCategory = "상의";

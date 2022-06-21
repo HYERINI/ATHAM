@@ -43,6 +43,7 @@ dependencies:
   flutter_svg: ^1.1.0
   image_picker: ^0.8.5+3
   numberpicker: ^2.1.1
+  marquee: ^2.2.3
 
 dev_dependencies:
   flutter_test:

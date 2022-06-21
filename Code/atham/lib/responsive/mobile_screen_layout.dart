@@ -107,6 +107,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
         onTap: navigationTapped,
         currentIndex: _page,
       ),
+    
     );
   }
 }

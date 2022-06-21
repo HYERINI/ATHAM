@@ -26,16 +26,90 @@ class ClosetScreen extends StatefulWidget {
 }
 
 class _ClosetScreenState extends State<ClosetScreen> {
+  final ScrollController _firstController = ScrollController();
+
   var userData = {};
   int postLen = 0;
   int followers = 0;
   int following = 0;
   bool isLoading = false;
 
+  String nowMainC = "전체";
+  String nowSubC = "전체";
+
   @override
   void initState() {
     super.initState();
     getData();
+  }
+
+  List<String> mainCategoryList = [
+    '상의',
+    '아우터',
+    '원피스/세트',
+    '팬츠',
+    '스커트',
+    '트레이닝',
+    '가방',
+    '신발',
+    '패션소품',
+    '홈웨어',
+    '주얼리'
+  ];
+  List<String> subCategoryList = [];
+  void chooseSubList(String? nowString) {
+    if (nowString == "상의") {
+      subCategoryList = [
+        "반팔티셔트",
+        "블라우스",
+        "셔츠",
+        "민소매",
+        "니트",
+        "조끼",
+        "긴팔티셔츠",
+        "후드",
+        "맨투맨"
+      ];
+    } else if (nowString == "아우터") {
+      subCategoryList = ["가디건", "바람막이", "자켓", "집업/점퍼", "야상", "플리스", "코트", "패딩"];
+    } else if (nowString == "원피스/세트") {
+      subCategoryList = ["미니원피스", "롱원피스", "투피스", "점프수트"];
+    } else if (nowString == "팬츠") {
+      subCategoryList = ["롱팬츠", "슬랙스", "데님", "숏팬츠"];
+    } else if (nowString == "스커트") {
+      subCategoryList = ["미니 스커트", "미디/롱스커트"];
+    } else if (nowString == "트레이닝") {
+      subCategoryList = ["트레이닝 세트", "트레이닝 상의", "트레이닝 하의", "레깅스"];
+    } else if (nowString == "가방") {
+      subCategoryList = ["그로스백", "숄더백", "토트백", "클러치", "에코백", "백팩", "지갑", "파우치"];
+    } else if (nowString == "신발") {
+      subCategoryList = [
+        "블로퍼/뮬",
+        "플랫/로퍼",
+        "샌들",
+        "스니커즈",
+        "슬리퍼/쪼리",
+        "힐",
+        "위커/부츠"
+      ];
+    } else if (nowString == "패션소품") {
+      subCategoryList = [
+        "헤어",
+        "모자",
+        "마스크",
+        "양말/스타킹",
+        "벨트",
+        "시계",
+        "머플러/스카프",
+        "아이웨어",
+        "장갑",
+        "기타"
+      ];
+    } else if (nowString == "홈웨어") {
+      subCategoryList = ["세트", "윈피스", "잠옷바지", "로브/가운"];
+    } else if (nowString == "주얼리") {
+      subCategoryList = ["귀걸이", "목걸이", "반지", "팔찌", "발찌", "보석함"];
+    }
   }
 
   getData() async {
@@ -104,98 +178,12 @@ class _ClosetScreenState extends State<ClosetScreen> {
             appBar: AppBar(
               backgroundColor: mobileBackgroundColor,
               title: Text(
-                userData['username'],
+                userData['username'] + "의 옷장",
               ),
               centerTitle: false,
             ),
             body: ListView(
               children: [
-
-                // Padding(
-                //   padding: const EdgeInsets.all(16),
-                //   child: Column(
-                //     children: [
-                //       Row(
-                //         children: [
-                //           CircleAvatar(
-                //             backgroundColor: Colors.grey,
-                //             backgroundImage: NetworkImage(
-                //               userData["photoUrl"],
-                //             ),
-                //             radius: 40,
-                //           ),
-                //           Expanded(
-                //             flex: 1,
-                //             child: Column(
-                //               children: [
-                //                 Row(
-                //                   mainAxisSize: MainAxisSize.max,
-                //                   mainAxisAlignment:
-                //                       MainAxisAlignment.spaceEvenly,
-                //                   children: [
-                //                     buildTouchColumn(postLen, "posts"),
-                //                     buildStatColumn(followers, "카테고리 수"),
-                //                     buildStatColumn(following, "좋아요 누른 수"),
-                //                   ],
-                //                 ),
-                //                 Row(
-                //                   mainAxisAlignment:
-                //                       MainAxisAlignment.spaceEvenly,
-                //                   children: [
-                //                     FirebaseAuth.instance.currentUser!.uid ==
-                //                             widget.uid
-                //                         ? FollowButton(
-                //                             text: 'Sign Out',
-                //                             backgroundColor:
-                //                                 mobileBackgroundColor,
-                //                             textColor: primaryColor,
-                //                             borderColor: Colors.grey,
-                //                             function: () async {
-                //                               await AuthMethods().logOut();
-                //                               Navigator.of(context)
-                //                                   .pushReplacement(
-                //                                 MaterialPageRoute(
-                //                                   builder: (context) =>
-                //                                       const LoginScreen(),
-                //                                 ),
-                //                               );
-                //                             },
-                //                           )
-                //                         : Text(
-                //                             "===")
-                //                   ],
-                //                 ),
-                //               ],
-                //             ),
-                //           ),
-                //         ],
-                //       ),
-                //       Container(
-                //         alignment: Alignment.centerLeft,
-                //         padding: const EdgeInsets.only(
-                //           top: 15,
-                //         ),
-                //         child: Text(
-                //           userData['username'],
-                //           style: TextStyle(
-                //             fontWeight: FontWeight.bold,
-                //           ),
-                //         ),
-                //       ),
-                //       Container(
-                //         alignment: Alignment.centerLeft,
-                //         padding: const EdgeInsets.only(
-                //           top: 1,
-                //         ),
-                //         child: Text(
-                //           userData['bio'],
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                
-                const Divider(),
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
@@ -204,23 +192,78 @@ class _ClosetScreenState extends State<ClosetScreen> {
                       Wrap(
                         direction: Axis.horizontal,
                         alignment: WrapAlignment.start,
+                        spacing: 10,
                         children: [
-                          mainCategoryButton("상의", Icons.checkroom),
-                          mainCategoryButton("하의", Icons.checkroom),
+                          mainCategoryButton('전체', Icons.checkroom),
+                          for (String mainName in mainCategoryList)
+                            mainCategoryButton(mainName, Icons.checkroom),
                         ],
                       )
                     ],
                   ),
                 ),
+
+                //if mainCategory == 전체, Don't show subCategoryList
+                if (nowMainC == "전체")
+                  Container()
+                else
+                  //if mainCategory != 전체, show subCategoryList
+
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        //mainCategpry Area
+                        Scrollbar(
+                            thumbVisibility: true,
+                            controller: _firstController,
+                            child: SizedBox(
+                              height: 56,
+                              child: ListView(
+                                controller: _firstController,
+                                scrollDirection: Axis.horizontal,
+                                shrinkWrap: true,
+                                children: [
+                                  subCategoryButton('전체', Icons.checkroom),
+                                  for (String subName in subCategoryList)
+                                    subCategoryButton(subName, Icons.checkroom),
+                                ],
+                              ),
+                            )
+
+                            // Row(
+                            //   children: [
+                            //     subCategoryButton('전체', Icons.checkroom),
+                            //     for(String subName in subCategoryList)
+                            //       subCategoryButton(subName, Icons.checkroom),
+                            //   ]
+                            // ),
+
+                            )
+
+                        // Wrap(
+                        //   direction: Axis.horizontal,
+                        //   alignment: WrapAlignment.start,
+                        //   spacing: 5,
+                        //   children: [
+                        //     subCategoryButton('전체', Icons.checkroom),
+                        //     for(String subName in subCategoryList)
+                        //       subCategoryButton(subName, Icons.checkroom),
+                        //   ],
+                        // )
+                      ],
+                    ),
+                  ),
+
                 Column(
                   children: [
-                    if (_usingCategory != "ALL")
+                    if (nowMainC == "전체")
+                      //if Category == 전체
                       StreamBuilder(
                         stream: FirebaseFirestore.instance
                             .collection('users')
                             .doc(widget.uid)
                             .collection("closet")
-                            .where('nowCategory', isEqualTo: _usingCategory)
                             .snapshots(),
                         builder: (context,
                             AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
@@ -246,12 +289,49 @@ class _ClosetScreenState extends State<ClosetScreen> {
                                 );
                         },
                       )
-                    else // and if Category == ALL
+                    else // if Category != 전체
+                    if (nowSubC == "전체")
+                      // and if subCategory == 전체 and Category != 전체
                       StreamBuilder(
                         stream: FirebaseFirestore.instance
                             .collection('users')
                             .doc(widget.uid)
                             .collection("closet")
+                            .where('mainCategory', isEqualTo: nowMainC)
+                            .snapshots(),
+                        builder: (context,
+                            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                                snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          return snapshot.data!.docs.isEmpty
+                              ? Text("it's empty...")
+                              : ListView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  itemCount: snapshot.data!.docs.length,
+                                  itemBuilder: (ctx, index) {
+                                    return ClothesCard(
+                                        snap: snapshot.data!.docs[index],
+                                        uid: widget.uid);
+                                  },
+                                );
+                        },
+                      )
+                    else
+                      // and if subCategory != 전체 and Category != 전체
+                      StreamBuilder(
+                        stream: FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(widget.uid)
+                            .collection("closet")
+                            .where('mainCategory', isEqualTo: nowMainC)
+                            .where('subCategory', isEqualTo: nowSubC)
                             .snapshots(),
                         builder: (context,
                             AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
@@ -373,10 +453,46 @@ class _ClosetScreenState extends State<ClosetScreen> {
       size: Size(56, 56),
       child: ClipOval(
         child: Material(
-          color: Color.fromARGB(255, 94, 94, 94),
+          color: nowMainC == name
+              ? Color.fromARGB(255, 0, 166, 125)
+              : Color.fromARGB(255, 94, 94, 94),
           child: InkWell(
             splashColor: Color.fromARGB(255, 213, 213, 213),
-            onTap: () {},
+            onTap: () {
+              setState(() {
+                nowMainC = name;
+                nowSubC = "전체";
+                chooseSubList(nowMainC);
+              });
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(nowIcon), // <-- Icon
+                Text(name), // <-- Text
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget subCategoryButton(String name, IconData nowIcon) {
+    return SizedBox.fromSize(
+      size: Size(56, 56),
+      child: ClipOval(
+        child: Material(
+          color: nowSubC == name
+              ? Color.fromARGB(255, 136, 0, 166)
+              : Color.fromARGB(255, 94, 94, 94),
+          child: InkWell(
+            splashColor: Color.fromARGB(255, 213, 213, 213),
+            onTap: () {
+              setState(() {
+                nowSubC = name;
+              });
+            },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[

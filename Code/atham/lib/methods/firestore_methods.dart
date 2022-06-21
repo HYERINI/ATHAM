@@ -251,6 +251,23 @@ class fireStoreMethods {
     }
   }
 
+  Future<void> addusedTimes(
+    String clothesUid,
+  ) async {
+    try {
+      DocumentSnapshot snap =
+          await _firestore.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection("closet").doc(clothesUid).get();
+      int oldTimes = (snap.data()! as dynamic)['usedTimes'];
+
+      await _firestore
+        .collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection("closet").doc(clothesUid)
+        .update({'usedTimes': oldTimes + 1});
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+
   Future<void> removeCategory(
     String categoryName,
   ) async {

@@ -1,4 +1,5 @@
 import 'package:atham/screens/another_profile_screen.dart';
+import 'package:atham/screens/closet_screen.dart';
 import 'package:atham/screens/comments_screen.dart';
 import 'package:atham/screens/profile_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -102,7 +103,7 @@ class _PostCardState extends State<PostCard> {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) =>
-                              ProfileScreen(uid: widget.snap['uid'].toString()),
+                              ClosetScreen(uid: widget.snap['uid'].toString()),
                         ),
                       );
                   },
@@ -310,7 +311,7 @@ class _PostCardState extends State<PostCard> {
                             onPressed: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => ProfileScreen(
+                                  builder: (context) => ClosetScreen(
                                     uid: widget.snap['uid'].toString(),
                                   ),
                                 ),
