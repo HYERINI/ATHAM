@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:atham/providers/user_provider.dart';
 import 'package:atham/methods/firestore_methods.dart';
@@ -11,14 +12,14 @@ import 'package:provider/provider.dart';
 import 'package:path/path.dart' as p;
 
 class AddClothesScreen extends StatefulWidget {
-  const AddClothesScreen({Key? key}) : super(key: key);
+  final Uint8List file;
+  const AddClothesScreen({Key? key, required this.file}) : super(key: key);
 
   @override
   _AddClothesScreenState createState() => _AddClothesScreenState();
 }
 
 class _AddClothesScreenState extends State<AddClothesScreen> {
-  Uint8List? _file;
   bool isLoading = false;
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _clothesNameController = TextEditingController();
@@ -35,12 +36,12 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
     '신발',
     '패션소품',
     '홈웨어',
-    '주얼리'  
+    '주얼리'
   ];
   List<String> subCategoryList = [];
 
   String selectedMainCategory = "상의";
-  String selectedSubCategory = "반팔티셔츠";
+  String selectedSubCategory = "";
   var selectedMaxT = 10;
   var selectedMinT = 0;
 
@@ -63,69 +64,47 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
       subCategoryList = ["미니원피스", "롱원피스", "투피스", "점프수트"];
     } else if (nowString == "팬츠") {
       subCategoryList = ["롱팬츠", "슬랙스", "데님", "숏팬츠"];
-    }else if (nowString == "스커트") {
+    } else if (nowString == "스커트") {
       subCategoryList = ["미니 스커트", "미디/롱스커트"];
-    }else if (nowString == "트레이닝") {
+    } else if (nowString == "트레이닝") {
       subCategoryList = ["트레이닝 세트", "트레이닝 상의", "트레이닝 하의", "레깅스"];
-    }else if (nowString == "가방") {
+    } else if (nowString == "가방") {
       subCategoryList = ["그로스백", "숄더백", "토트백", "클러치", "에코백", "백팩", "지갑", "파우치"];
-    }else if (nowString == "신발") {
-      subCategoryList = ["블로퍼/뮬", "플랫/로퍼", "샌들", "스니커즈", "슬리퍼/쪼리", "힐", "위커/부츠"];
-    }else if (nowString == "패션소품") {
-      subCategoryList = ["헤어", "모자", "마스크", "양말/스타킹", "벨트", "시계", "머플러/스카프", "아이웨어", "장갑", "기타"];
-    }else if (nowString == "홈웨어") {
+    } else if (nowString == "신발") {
+      subCategoryList = [
+        "블로퍼/뮬",
+        "플랫/로퍼",
+        "샌들",
+        "스니커즈",
+        "슬리퍼/쪼리",
+        "힐",
+        "위커/부츠"
+      ];
+    } else if (nowString == "패션소품") {
+      subCategoryList = [
+        "헤어",
+        "모자",
+        "마스크",
+        "양말/스타킹",
+        "벨트",
+        "시계",
+        "머플러/스카프",
+        "아이웨어",
+        "장갑",
+        "기타"
+      ];
+    } else if (nowString == "홈웨어") {
       subCategoryList = ["세트", "윈피스", "잠옷바지", "로브/가운"];
-    }else if (nowString == "주얼리") {
+    } else if (nowString == "주얼리") {
       subCategoryList = ["귀걸이", "목걸이", "반지", "팔찌", "발찌", "보석함"];
     }
-  }
-
-  _selectImage(BuildContext parentContext) async {
-    return showDialog(
-      context: parentContext,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          title: const Text('옷 추가하기'),
-          children: <Widget>[
-            SimpleDialogOption(
-                padding: const EdgeInsets.all(20),
-                child: const Text('Take a photo'),
-                onPressed: () async {
-                  Navigator.pop(context);
-                  Uint8List file = await pickImage(ImageSource.camera, 30);
-                  setState(() {
-                    _file = file;
-                  });
-                }),
-            SimpleDialogOption(
-                padding: const EdgeInsets.all(20),
-                child: const Text('Choose from Gallery'),
-                onPressed: () async {
-                  Navigator.of(context).pop();
-                  //Uint8List file = await pickImage(ImageSource.gallery);
-                  Uint8List file = await pickImage(ImageSource.gallery, 50);
-                  setState(() {
-                    _file = file;
-                  });
-                }),
-            SimpleDialogOption(
-              padding: const EdgeInsets.all(20),
-              child: const Text("Cancel"),
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-            )
-          ],
-        );
-      },
-    );
   }
 
   void postClothes(String uid, String username, String profImage,
       String mainCategory, String subCategory, int maxT, int minT) async {
     if (_descriptionController.text.isEmpty ||
-        _clothesNameController.text.isEmpty) {
+        _clothesNameController.text.isEmpty ||
+        selectedSubCategory.isEmpty) {
       showSnackBar(context, "아직 입력하지 않는 정보가 있습니다!!!");
       return;
     }
@@ -138,7 +117,7 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
       // upload to storage and db
       String res = await fireStoreMethods().uploadClothes(
           _descriptionController.text,
-          _file!,
+          widget.file!,
           uid,
           _clothesNameController.text,
           _nowCategoryController.text,
@@ -154,7 +133,7 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
           context,
           'Posted!',
         );
-        clearImage();
+        Navigator.pop(context);
       } else {
         showSnackBar(context, res);
       }
@@ -172,8 +151,9 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
 
   void clearImage() {
     setState(() {
-      _file = null;
+      //_file = null;
     });
+    Navigator.pop(context);
   }
 
   @override
@@ -188,18 +168,7 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
   Widget build(BuildContext context) {
     final UserProvider userProvider = Provider.of<UserProvider>(context);
 
-    return _file == null
-        ? Material(
-            child: Center(
-              child: IconButton(
-                icon: const Icon(
-                  Icons.upload,
-                ),
-                onPressed: () => _selectImage(context),
-              ),
-            ),
-          )
-        : Scaffold(
+    return Scaffold(
             appBar: AppBar(
               backgroundColor: mobileBackgroundColor,
               leading: IconButton(
@@ -207,7 +176,7 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
                 onPressed: clearImage,
               ),
               title: const Text(
-                'Post to',
+                '옷 등록페이지',
               ),
               centerTitle: false,
               actions: <Widget>[
@@ -221,7 +190,7 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
                       selectedMaxT,
                       selectedMinT),
                   child: const Text(
-                    "Add Clothes",
+                    "등록하기!",
                     style: TextStyle(
                         color: Colors.blueAccent,
                         fontWeight: FontWeight.bold,
@@ -231,7 +200,7 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
               ],
             ),
             // POST FORM
-            body: Column(
+            body: ListView(
               children: <Widget>[
                 isLoading
                     ? const LinearProgressIndicator()
@@ -241,68 +210,157 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
                   //mainAxisAlignment: MainAxisAlignment.spaceAround,
                   //crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        userProvider.getUser.photoUrl,
+                    Container(
+                      margin: EdgeInsets.all(10),
+                      height: 150,
+                      alignment: Alignment.topCenter,
+                      child: Image.memory(
+                        widget.file,
+                        fit: BoxFit.fitHeight,
                       ),
                     ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 1,
-                      child: TextField(
-                        controller: _clothesNameController,
-                        decoration:
-                            const InputDecoration(hintText: "옷 이름을 입력하세요"),
-                        maxLines: 1,
+
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Text(
+                            "옷 이름:",
+                            style: GoogleFonts.jua(fontSize: 17),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 4,
+                          child: TextField(
+                            controller: _clothesNameController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: '옷의 이름은?',
+                            ),
+                            maxLines: 1,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      margin: EdgeInsets.fromLTRB(7, 0, 7, 0),
+                      child: Divider(color: Colors.grey,)
+                    ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "옷에 대한 설명: ",
+                        style: GoogleFonts.jua(fontSize: 17),
                       ),
                     ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 1,
+                    Container(
+                      margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
                       child: TextField(
                         controller: _descriptionController,
-                        decoration: const InputDecoration(
-                            hintText: "Write a caption..."),
-                        maxLines: 3,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: '이 옷에 대해 설명해보세요!',
+                        ),
+                        maxLines: 4,
                       ),
                     ),
                     Row(
                       children: [
                         Expanded(
+                          flex: 3,
                           child: SizedBox(
                               width: MediaQuery.of(context).size.width * 1,
-                              child: DropdownButton(
-                                value: selectedMainCategory,
-                                items: mainCategoryList.map((String value) {
-                                  return DropdownMenuItem(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                onChanged: (String? value) {
-                                  chooseSubList(value);
-                                  setState(() {
-                                    selectedSubCategory = subCategoryList[0];
-                                    selectedMainCategory = value!;
-                                  });
-                                },
+                              child: Text(
+                                "메인 카테고리",
+                                style: GoogleFonts.jua(fontSize: 17),
                               )),
                         ),
                         Expanded(
+                          flex: 7,
                           child: SizedBox(
                               width: MediaQuery.of(context).size.width * 1,
-                              child: DropdownButton(
-                                value: selectedSubCategory,
-                                items: subCategoryList.map((String value) {
-                                  return DropdownMenuItem(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    selectedSubCategory = value!;
-                                  });
-                                },
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton(
+                                  value: selectedMainCategory,
+                                  items: mainCategoryList.map((String value) {
+                                    return DropdownMenuItem(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? value) {
+                                    chooseSubList(value);
+                                    setState(() {
+                                      selectedSubCategory = subCategoryList[0];
+                                      selectedMainCategory = value!;
+                                    });
+                                  },
+                                ),
                               )),
+                        ),
+                        
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 1,
+                              child: Text(
+                                "하위 카테고리",
+                                style: GoogleFonts.jua(fontSize: 17),
+                              )),
+                        ),
+                        Expanded(
+                          flex: 7,
+                          child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 1,
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton(
+                                  value: selectedSubCategory,
+                                  items: subCategoryList.map((String value) {
+                                    return DropdownMenuItem(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? value) {
+                                    setState(() {
+                                      selectedSubCategory = value!;
+                                    });
+                                  },
+                                ),
+                              )),
+                        ),
+                      ],
+                    ),
+                    const Divider(color: Colors.grey,),
+                    Text(
+                      "입을 수 있는 온도는?",
+                      style: GoogleFonts.jua(fontSize: 17),
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                                "최저 기온",
+                                style: GoogleFonts.jua(fontSize: 14),
+                              ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                                "최고 기온",
+                                style: GoogleFonts.jua(fontSize: 14),
+                              ),
+                          ),
                         ),
                       ],
                     ),
@@ -327,6 +385,7 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
                             ),
                           ),
                         ),
+                        const Divider(color: Colors.grey,),
                         Expanded(
                           child: SizedBox(
                             width: MediaQuery.of(context).size.width * 1,
@@ -347,19 +406,6 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
                           ),
                         ),
                       ],
-                    ),
-                    SizedBox(
-                      child: AspectRatio(
-                        aspectRatio: 487 / 451,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                            fit: BoxFit.fill,
-                            alignment: FractionalOffset.topCenter,
-                            image: MemoryImage(_file!),
-                          )),
-                        ),
-                      ),
                     ),
                   ],
                 ),

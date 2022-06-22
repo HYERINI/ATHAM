@@ -71,11 +71,6 @@ class _AnotherProfileScreenState extends State<AnotherProfileScreen> {
     });
   }
 
-  toAddClothes() {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => AddClothesScreen(),
-    ));
-  }
 
   String _usingCategory = "ALL";
 
@@ -402,7 +397,7 @@ class _AnotherProfileScreenState extends State<AnotherProfileScreen> {
   Widget _getFAB() {
     if (FirebaseAuth.instance.currentUser!.uid == widget.uid) {
       return FloatingActionButton(
-              onPressed: toAddClothes,
+              onPressed:() {},
               tooltip: 'Increment',
               child: const Icon(Icons.add),
             );

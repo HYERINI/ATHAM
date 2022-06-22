@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:atham/screens/add_clothes_screen.dart';
 import 'package:atham/screens/add_post_screen.dart';
 import 'package:atham/screens/my_post_screen.dart';
+import 'package:atham/screens/profile_screen.dart';
 import 'package:atham/utils/global_var.dart';
 import 'package:atham/widgets/category_list.dart';
 import 'package:atham/widgets/clothes_card.dart';
@@ -145,12 +146,6 @@ class _ClosetScreenState extends State<ClosetScreen> {
     });
   }
 
-  toAddClothes() {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => AddClothesScreen(),
-    ));
-  }
-
   String _usingCategory = "ALL";
 
   void _updateCategory(String nowCategory) {
@@ -181,18 +176,35 @@ class _ClosetScreenState extends State<ClosetScreen> {
                 userData['username'] + "의 옷장",
               ),
               centerTitle: false,
+              actions: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.person,
+                          color: primaryColor,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ProfileScreen(
+                                  uid: FirebaseAuth.instance.currentUser!.uid),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
             ),
             body: ListView(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(5),
                   child: Column(
                     children: [
                       //mainCategpry Area
                       Wrap(
                         direction: Axis.horizontal,
                         alignment: WrapAlignment.start,
-                        spacing: 10,
+                        spacing: 1,
+                        runSpacing: 3,
                         children: [
                           mainCategoryButton('전체', Icons.checkroom),
                           for (String mainName in mainCategoryList)
@@ -223,6 +235,7 @@ class _ClosetScreenState extends State<ClosetScreen> {
                                 controller: _firstController,
                                 scrollDirection: Axis.horizontal,
                                 shrinkWrap: true,
+                                
                                 children: [
                                   subCategoryButton('전체', Icons.checkroom),
                                   for (String subName in subCategoryList)
@@ -368,13 +381,27 @@ class _ClosetScreenState extends State<ClosetScreen> {
   Widget _getFAB() {
     if (FirebaseAuth.instance.currentUser!.uid == widget.uid) {
       return FloatingActionButton(
-        onPressed: toAddClothes,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      );
+      onPressed: () {
+        _selectImage(context);
+      },
+      tooltip: 'Increment',
+      child: const Icon(Icons.add),
+    );
     } else {
       return Container();
     }
+  }
+
+  _selectImage(BuildContext parentContext) async {
+    Uint8List file = await pickImage(ImageSource.gallery, 30);
+    //go to add page
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => AddClothesScreen(
+          file: file,
+        ),
+      ),
+    );
   }
 
   Column buildStatColumn(int num, String label) {
@@ -448,61 +475,73 @@ class _ClosetScreenState extends State<ClosetScreen> {
     );
   }
 
+  
   Widget mainCategoryButton(String name, IconData nowIcon) {
-    return SizedBox.fromSize(
-      size: Size(56, 56),
-      child: ClipOval(
+    return SizedBox(
+      width: 60,
+      height: 40,
+      child: Container(
+        margin: EdgeInsets.fromLTRB(2, 0, 2, 0),
         child: Material(
-          color: nowMainC == name
-              ? Color.fromARGB(255, 0, 166, 125)
-              : Color.fromARGB(255, 94, 94, 94),
-          child: InkWell(
-            splashColor: Color.fromARGB(255, 213, 213, 213),
-            onTap: () {
-              setState(() {
-                nowMainC = name;
-                nowSubC = "전체";
-                chooseSubList(nowMainC);
-              });
-            },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(nowIcon), // <-- Icon
-                Text(name), // <-- Text
-              ],
+            borderRadius: BorderRadius.circular(10),
+            color: nowMainC == name
+                ? Color.fromARGB(255, 255, 87, 87)
+                : Color.fromARGB(255, 94, 94, 94),
+            child: InkWell(
+              splashColor: Color.fromARGB(255, 213, 213, 213),
+              onTap: () {
+                setState(() {
+                  nowMainC = name;
+                  nowSubC = "전체";
+                  chooseSubList(nowMainC);
+                });
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(nowIcon), // <-- Icon
+                  Text(name,
+                  style: Theme.of(context).textTheme.bodySmall,), // <-- Text
+                ],
+              ),
             ),
           ),
-        ),
       ),
     );
   }
 
+
   Widget subCategoryButton(String name, IconData nowIcon) {
-    return SizedBox.fromSize(
-      size: Size(56, 56),
-      child: ClipOval(
+    return SizedBox(
+      width: 60,
+      height: 40,
+      child: Container(
+        margin: EdgeInsets.fromLTRB(2, 0, 2, 0),
         child: Material(
-          color: nowSubC == name
-              ? Color.fromARGB(255, 136, 0, 166)
-              : Color.fromARGB(255, 94, 94, 94),
-          child: InkWell(
-            splashColor: Color.fromARGB(255, 213, 213, 213),
-            onTap: () {
-              setState(() {
-                nowSubC = name;
-              });
-            },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(nowIcon), // <-- Icon
-                Text(name), // <-- Text
-              ],
+            borderRadius: BorderRadius.circular(10),
+            color: nowSubC == name
+                ? Color.fromARGB(255, 254, 51, 129)
+                : Color.fromARGB(255, 94, 94, 94),
+            child: InkWell(
+              splashColor: Color.fromARGB(255, 213, 213, 213),
+              onTap: () {
+                setState(() {
+                  nowSubC = name;
+                });
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(nowIcon), // <-- Icon
+                  Text(name,
+                  style: Theme.of(context).textTheme.bodySmall,), // <-- Text
+                ],
+              ),
             ),
           ),
-        ),
       ),
     );
   }
+
+
 }

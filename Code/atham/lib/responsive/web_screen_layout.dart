@@ -54,10 +54,10 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
       appBar: AppBar(
         backgroundColor: mobileBackgroundColor,
         centerTitle: false,
-        title: SvgPicture.asset(
-          'assets/ic_instagram.svg',
+        title: Image.asset(
+          'assets/AthamLogo.png',
           color: primaryColor,
-          height: 32,
+          height: 80,
         ),
         actions: [
           IconButton(
@@ -102,7 +102,7 @@ class _WebScreenLayoutState extends State<WebScreenLayout> {
         children: [
           const TodayPostScreen(),
           const WhenPostScreen(),
-          const AddPostScreen(),
+          //const AddPostScreen(),
           const LikedPostScreen(),
           ClosetScreen(
             uid: FirebaseAuth.instance.currentUser!.uid,

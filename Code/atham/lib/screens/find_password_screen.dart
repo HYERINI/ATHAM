@@ -1,5 +1,6 @@
 import 'package:atham/responsive/responsive_layout.dart';
 import 'package:atham/responsive/web_screen_layout.dart';
+import 'package:atham/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -47,16 +48,16 @@ class _FindPWScreenState extends State<FindPWScreen> {
                 child: Container(),
                 flex: 2,
               ),
-              SvgPicture.asset(
-                'assets/ic_instagram.svg',
-                color: primaryColor,
-                height: 64,
+              Image.asset(
+                'assets/AthamLogo.png',
+                //color: primaryColor,
+                height: 150,
               ),
               const SizedBox(
                 height: 64,
               ),
               TextFieldInput(
-                hintText: 'Enter your email',
+                hintText: '이메일을 입력하세요',
                 textInputType: TextInputType.emailAddress,
                 textEditingController: _emailController,
               ),
@@ -89,7 +90,8 @@ class _FindPWScreenState extends State<FindPWScreen> {
                   FirebaseAuth.instance
                       .sendPasswordResetEmail(email: _emailController.text);
                   Navigator.of(context).pop();
-                  showSnackBar(context, "이메일 주소을 제대로 입력하셨다면 이메일이 발송했을 것입니다.스팸 매일으로 잘못 인식할 수 있습니다.");
+                  showSnackBar(context,
+                      "이메일 주소을 제대로 입력하셨다면 이메일이 발송했을 것입니다.스팸 매일으로 잘못 인식할 수 있습니다.");
                 },
               ),
               const SizedBox(
@@ -99,6 +101,34 @@ class _FindPWScreenState extends State<FindPWScreen> {
                 child: Container(),
                 flex: 2,
               ),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      child: const Text(
+                        '비밀번호를 생각났다면?',
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                    ),
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const LoginScreen(),
+                        ),
+                      ),
+                      child: Container(
+                        child: const Text(
+                          '  로그인하기',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                      ),
+                    ),
+                  ],
+                ),
+            
             ],
           ),
         ),

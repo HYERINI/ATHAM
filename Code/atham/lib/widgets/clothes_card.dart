@@ -62,7 +62,7 @@ class ClothesCard extends StatelessWidget {
             image: NetworkImage(
               snap.data()['clothesPhotoUrl'],
             ),
-            width: 150,
+            width: 120,
             fit: BoxFit.fitWidth,
           ),
           Expanded(
@@ -90,13 +90,8 @@ class ClothesCard extends StatelessWidget {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: '옷 메인카테고리: ',
+                          text: '옷 카테고리: ',
                         ),
-                        TextSpan(
-                            text: snap.data()['mainCategory'],
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            )),
                       ],
                     ),
                   ),
@@ -104,10 +99,7 @@ class ClothesCard extends StatelessWidget {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: '옷 하위카테고리: ',
-                        ),
-                        TextSpan(
-                            text: snap.data()['subCategory'],
+                            text: (snap.data()['mainCategory'] == null ?"null" : snap.data()['mainCategory']) + " > " + (snap.data()['subCategory'] == null ? "null" : snap.data()['subCategory']),
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                             )),

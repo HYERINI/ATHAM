@@ -12,7 +12,7 @@ const webScreenSize = 600;
 List<Widget> homeScreenItems = [
   const TodayPostScreen(),
   const WhenPostScreen(),
-  const AddPostScreen(),
+  //const AddPostScreen(),
   const LikedPostScreen(),
   AnotherProfileScreen(
     uid: FirebaseAuth.instance.currentUser!.uid,

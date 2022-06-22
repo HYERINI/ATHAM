@@ -9,59 +9,17 @@ import 'package:atham/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class AddPostScreen extends StatefulWidget {
-  const AddPostScreen({Key? key}) : super(key: key);
+  final Uint8List file;
+  final int postType;
+  const AddPostScreen({Key? key, required this.file, required this.postType}) : super(key: key);
 
   @override
   _AddPostScreenState createState() => _AddPostScreenState();
 }
 
 class _AddPostScreenState extends State<AddPostScreen> {
-  Uint8List? _file;
-  int postType = 0;
   bool isLoading = false;
   final TextEditingController _descriptionController = TextEditingController();
-
-  _selectImage(BuildContext parentContext) async {
-    return showDialog(
-      context: parentContext,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          title: const Text('Create a Post'),
-          children: <Widget>[
-            SimpleDialogOption(
-                padding: const EdgeInsets.all(20),
-                child: const Text('오늘의 코디 게시물 올리기'),
-                onPressed: () async {
-                  Navigator.pop(context);
-                  Uint8List file = await pickImage(ImageSource.gallery, 30);
-                  setState(() {
-                    _file = file;
-                    postType = 1;
-                  });
-                }),
-            SimpleDialogOption(
-                padding: const EdgeInsets.all(20),
-                child: const Text('상황별 코디 게시물 올리기'),
-                onPressed: () async {
-                  Navigator.of(context).pop();
-                  Uint8List file = await pickImage(ImageSource.gallery, 30);
-                  setState(() {
-                    _file = file;
-                    postType = 2;
-                  });
-                }),
-            SimpleDialogOption(
-              padding: const EdgeInsets.all(20),
-              child: const Text("Cancel"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            )
-          ],
-        );
-      },
-    );
-  }
 
   void postTodayImage(String uid, String username, String profImage) async {
     setState(() {
@@ -72,7 +30,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
       // upload to storage and db
       String res = await fireStoreMethods().uploadPostToday(
         _descriptionController.text,
-        _file!,
+        widget.file,
         uid,
         username,
         profImage,
@@ -109,7 +67,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
       // upload to storage and db
       String res = await fireStoreMethods().uploadPostWhen(
         _descriptionController.text,
-        _file!,
+        widget.file,
         uid,
         username,
         profImage,
@@ -122,7 +80,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
           context,
           'Posted!',
         );
-        clearImage();
+        Navigator.pop(context);
       } else {
         showSnackBar(context, res);
       }
@@ -139,9 +97,10 @@ class _AddPostScreenState extends State<AddPostScreen> {
 
   void clearImage() {
     setState(() {
-      _file = null;
-      postType = 0;
+      //file = null;
+      //postType = 0;
     });
+    Navigator.pop(context);
   }
 
   @override
@@ -154,16 +113,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   Widget build(BuildContext context) {
     final UserProvider userProvider = Provider.of<UserProvider>(context);
 
-    return _file == null
-        ? Center(
-            child: IconButton(
-              icon: const Icon(
-                Icons.upload,
-              ),
-              onPressed: () => _selectImage(context),
-            ),
-          )
-        : Scaffold(
+    return Scaffold(
             appBar: AppBar(
               backgroundColor: mobileBackgroundColor,
               leading: IconButton(
@@ -171,19 +121,19 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 onPressed: clearImage,
               ),
               title: const Text(
-                'Post to',
+                '게시물 올리기',
               ),
               centerTitle: false,
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
-                    if (postType == 1) {
+                    if (widget.postType == 1) {
                       postTodayImage(
                         userProvider.getUser.uid,
                         userProvider.getUser.username,
                         userProvider.getUser.photoUrl,
                       );
-                    } else if (postType == 2) {
+                    } else if (widget.postType == 2) {
                       postWhenImage(
                         userProvider.getUser.uid,
                         userProvider.getUser.username,
@@ -192,7 +142,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     }
                   },
                   child: const Text(
-                    "Post",
+                    "Post!",
                     style: TextStyle(
                         color: Colors.blueAccent,
                         fontWeight: FontWeight.bold,
@@ -208,38 +158,28 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     ? const LinearProgressIndicator()
                     : const Padding(padding: EdgeInsets.only(top: 0.0)),
                 const Divider(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Column(
                   children: <Widget>[
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        userProvider.getUser.photoUrl,
+                    Container(
+                      margin: EdgeInsets.all(10),
+                      height: 300,
+                      alignment: Alignment.topCenter,
+                      child: Image.memory(
+                        widget.file,
+                        fit: BoxFit.fitHeight,
                       ),
+                      
                     ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.3,
+                    Container(
+                      margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
                       child: TextField(
                         controller: _descriptionController,
-                        decoration: const InputDecoration(
-                            hintText: "Write a caption...",
-                            border: InputBorder.none),
-                        maxLines: 8,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 45.0,
-                      width: 45.0,
-                      child: AspectRatio(
-                        aspectRatio: 487 / 451,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                            fit: BoxFit.fill,
-                            alignment: FractionalOffset.topCenter,
-                            image: MemoryImage(_file!),
-                          )),
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: '오늘의 핏을 설명해보세요!...',
+                          
                         ),
+                        maxLines: 8,
                       ),
                     ),
                   ],

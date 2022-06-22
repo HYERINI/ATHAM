@@ -13,6 +13,7 @@ import 'package:atham/utils/colors.dart';
 import 'package:atham/utils/global_var.dart';
 import 'package:atham/utils/utils.dart';
 import 'package:atham/widgets/like_animation.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -264,13 +265,18 @@ class _PostCardState extends State<PostCard> {
                   icon: const Icon(
                     Icons.send,
                   ),
-                  onPressed: () {}),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => CommentsScreen(
+                          postId: widget.snap['postId'].toString(),
+                        ),
+                      ),
+                    );
+                  }),
               Expanded(
                   child: Align(
-                alignment: Alignment.bottomRight,
-                child: IconButton(
-                    icon: const Icon(Icons.bookmark_border), onPressed: () {}),
-              ))
+                      alignment: Alignment.bottomRight, child: Container()))
             ],
           ),
           //DESCRIPTION AND NUMBER OF COMMENTS
@@ -286,7 +292,7 @@ class _PostCardState extends State<PostCard> {
                         .subtitle2!
                         .copyWith(fontWeight: FontWeight.w800),
                     child: Text(
-                      '${widget.snap['likes'].length} likes',
+                      '좋아요 ${widget.snap['likes'].length} 개',
                       style: Theme.of(context).textTheme.bodyText2,
                     )),
                 Container(
@@ -302,11 +308,14 @@ class _PostCardState extends State<PostCard> {
                           children: [
                             TextSpan(
                               text: ' ${widget.snap['talking']}',
+                              style: Theme.of(context).textTheme.titleMedium
                             ),
                           ],
                         ),
                       ),
-                      if (widget.snap['postType'].toString() == "2" && FirebaseAuth.instance.currentUser!.uid != widget.snap["uid"])
+                      if (widget.snap['postType'].toString() == "2" &&
+                          FirebaseAuth.instance.currentUser!.uid !=
+                              widget.snap["uid"])
                         ElevatedButton(
                             onPressed: () {
                               Navigator.of(context).push(
@@ -324,9 +333,9 @@ class _PostCardState extends State<PostCard> {
                 InkWell(
                   child: Container(
                     child: Text(
-                      'View all $commentLen comments',
+                      '총 $commentLen 개의 댓글을 보러 가기',
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 15,
                         color: secondaryColor,
                       ),
                     ),

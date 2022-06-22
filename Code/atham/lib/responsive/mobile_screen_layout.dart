@@ -3,6 +3,7 @@ import 'package:atham/screens/another_profile_screen.dart';
 import 'package:atham/screens/closet_screen.dart';
 import 'package:atham/screens/liked_post_screen.dart';
 import 'package:atham/screens/profile_screen.dart';
+import 'package:atham/screens/today_main_screen.dart';
 import 'package:atham/screens/today_post_screen.dart';
 import 'package:atham/screens/when_post_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -53,7 +54,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
         children: [
           const TodayPostScreen(),
           const WhenPostScreen(),
-          const AddPostScreen(),
+          TodayMainScreen(),
           const LikedPostScreen(),
           ClosetScreen(
             uid: FirebaseAuth.instance.currentUser!.uid,
@@ -65,24 +66,26 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
       bottomNavigationBar: CupertinoTabBar(
         backgroundColor: mobileBackgroundColor,
         items: <BottomNavigationBarItem>[
+        
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.home,
+              Icons.today,
               color: (_page == 0) ? primaryColor : secondaryColor,
             ),
             label: '',
             backgroundColor: primaryColor,
           ),
+          
           BottomNavigationBarItem(
               icon: Icon(
-                Icons.today,
+                Icons.question_mark ,
                 color: (_page == 1) ? primaryColor : secondaryColor,
               ),
               label: '',
               backgroundColor: primaryColor),
           BottomNavigationBarItem(
               icon: Icon(
-                Icons.add_circle,
+                Icons.home,
                 color: (_page == 2) ? primaryColor : secondaryColor,
               ),
               label: '',
@@ -97,7 +100,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.person,
+              Icons.checkroom,
               color: (_page == 4) ? primaryColor : secondaryColor,
             ),
             label: '',

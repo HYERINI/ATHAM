@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:atham/methods/auth_methods.dart';
 import 'package:atham/responsive/mobile_screen_layout.dart';
@@ -94,42 +95,61 @@ class _SignupScreenState extends State<SignupScreen> {
                 child: Container(),
                 flex: 2,
               ),
-              SvgPicture.asset(
-                'assets/ic_instagram.svg',
-                color: primaryColor,
-                height: 64,
+              Image.asset(
+                'assets/AthamLogo.png',
+                height: 100,
+                width: 200,
+                fit: BoxFit.cover,
               ),
               const SizedBox(
-                height: 64,
+                height: 20,
               ),
-              Stack(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _image != null
-                      ? CircleAvatar(
-                          radius: 64,
-                          backgroundImage: MemoryImage(_image!),
-                          backgroundColor: Colors.red,
-                        )
-                      : const CircleAvatar(
-                          radius: 64,
-                          backgroundImage: AssetImage('assets/profileIcon.jpeg'),
-                          backgroundColor: Colors.red,
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                      Text(
+                        "회원 가입",
+                        style: GoogleFonts.jua(fontSize: 35),
+                      ),
+                      Text(
+                        "정보를 정확히 입력해주세요!",
+                        style: GoogleFonts.jua(fontSize: 16)
+                      ),
+                    ]),
+                  Stack(
+                    children: [
+                      _image != null
+                          ? CircleAvatar(
+                              radius: 40,
+                              backgroundImage: MemoryImage(_image!),
+                              backgroundColor: Colors.red,
+                            )
+                          : const CircleAvatar(
+                              radius: 40,
+                              backgroundImage:
+                                  AssetImage('assets/profileIcon.jpeg'),
+                              backgroundColor: Colors.red,
+                            ),
+                      Positioned(
+                        bottom: -10,
+                        left: 45,
+                        child: IconButton(
+                          onPressed: selectImage,
+                          icon: const Icon(Icons.add_a_photo),
                         ),
-                  Positioned(
-                    bottom: -10,
-                    left: 80,
-                    child: IconButton(
-                      onPressed: selectImage,
-                      icon: const Icon(Icons.add_a_photo),
-                    ),
-                  )
+                      )
+                    ],
+                  ),
                 ],
               ),
               const SizedBox(
                 height: 24,
               ),
               TextFieldInput(
-                hintText: 'Enter your username',
+                hintText: '닉네임을 입력하세요',
                 textInputType: TextInputType.text,
                 textEditingController: _usernameController,
               ),
@@ -194,7 +214,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 children: [
                   Container(
                     child: const Text(
-                      'Already have an account?',
+                      '이미 가입하셨다면?',
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 8),
                   ),
@@ -206,7 +226,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     child: Container(
                       child: const Text(
-                        ' Login.',
+                        '  로그인하기',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
@@ -216,6 +236,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ],
               ),
+            
             ],
           ),
         ),

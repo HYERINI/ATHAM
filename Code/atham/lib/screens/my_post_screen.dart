@@ -27,10 +27,10 @@ class _MyPostScreenState extends State<MyPostScreen> {
           : AppBar(
               backgroundColor: mobileBackgroundColor,
               centerTitle: false,
-              title: SvgPicture.asset(
-                'assets/ic_instagram.svg',
-                color: primaryColor,
-                height: 32,
+              title: Image.asset(
+                'assets/AthamLogo.png',
+                //color: primaryColor,
+                height: 80,
               ),
               actions: [
                 IconButton(

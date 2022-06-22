@@ -1,9 +1,16 @@
+import 'dart:typed_data';
+
+import 'package:atham/screens/add_post_screen.dart';
+import 'package:atham/screens/profile_screen.dart';
+import 'package:atham/utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:atham/utils/colors.dart';
 import 'package:atham/utils/global_var.dart';
 import 'package:atham/widgets/post_card.dart';
+import 'package:image_picker/image_picker.dart';
 
 class WhenPostScreen extends StatefulWidget {
   const WhenPostScreen({Key? key}) : super(key: key);
@@ -13,7 +20,6 @@ class WhenPostScreen extends StatefulWidget {
 }
 
 class _WhenPostScreenState extends State<WhenPostScreen> {
-
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -26,23 +32,34 @@ class _WhenPostScreenState extends State<WhenPostScreen> {
           : AppBar(
               backgroundColor: mobileBackgroundColor,
               centerTitle: false,
-              title: SvgPicture.asset(
-                'assets/ic_instagram.svg',
-                color: primaryColor,
-                height: 32,
+              title: Image.asset(
+                'assets/AthamLogo.png',
+                //color: primaryColor,
+                height: 80,
               ),
               actions: [
                 IconButton(
                   icon: const Icon(
-                    Icons.messenger_outline,
+                    Icons.person,
                     color: primaryColor,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ProfileScreen(
+                            uid: FirebaseAuth.instance.currentUser!.uid),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('posts').where("postType", isEqualTo: 2).orderBy("datePublished", descending: true).snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('posts')
+            .where("postType", isEqualTo: 2)
+            .orderBy("datePublished", descending: true)
+            .snapshots(),
         builder: (context,
             AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -64,7 +81,30 @@ class _WhenPostScreenState extends State<WhenPostScreen> {
           );
         },
       ),
-    
+      floatingActionButton: _getFAB(),
+    );
+  }
+
+  _selectImage(BuildContext parentContext) async {
+    Uint8List file = await pickImage(ImageSource.gallery, 30);
+    //go to add page
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => AddPostScreen(
+          file: file,
+          postType: 2,
+        ),
+      ),
+    );
+  }
+
+  Widget _getFAB() {
+    return FloatingActionButton(
+      onPressed: () {
+        _selectImage(context);
+      },
+      tooltip: 'Increment',
+      child: const Icon(Icons.add),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:atham/screens/profile_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -57,18 +58,25 @@ class _LikedPostScreenState extends State<LikedPostScreen> {
                 : AppBar(
                     backgroundColor: mobileBackgroundColor,
                     centerTitle: false,
-                    title: SvgPicture.asset(
-                      'assets/ic_instagram.svg',
-                      color: primaryColor,
-                      height: 32,
+                    title: Image.asset(
+                      'assets/AthamLogo.png',
+                      //color: primaryColor,
+                      height: 80,
                     ),
                     actions: [
                       IconButton(
                         icon: const Icon(
-                          Icons.messenger_outline,
+                          Icons.person,
                           color: primaryColor,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ProfileScreen(
+                                  uid: FirebaseAuth.instance.currentUser!.uid),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -77,9 +85,11 @@ class _LikedPostScreenState extends State<LikedPostScreen> {
                 : StreamBuilder(
                     stream: FirebaseFirestore.instance
                         .collection('posts')
-                        .where('postId', whereIn: userdata["following"]).snapshots(),
+                        .where('postId', whereIn: userdata["following"])
+                        .snapshots(),
                     builder: (context,
-                        AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                        AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                            snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(
                           child: CircularProgressIndicator(),
@@ -98,6 +108,7 @@ class _LikedPostScreenState extends State<LikedPostScreen> {
                         ),
                       );
                     },
-                  ),);
+                  ),
+          );
   }
 }

@@ -1,7 +1,9 @@
 import 'dart:typed_data';
 
+import 'package:atham/flutter_flow/flutter_flow_theme.dart';
 import 'package:atham/screens/add_clothes_screen.dart';
 import 'package:atham/screens/add_post_screen.dart';
+import 'package:atham/screens/closet_screen.dart';
 import 'package:atham/screens/my_post_screen.dart';
 import 'package:atham/utils/global_var.dart';
 import 'package:atham/widgets/category_list.dart';
@@ -31,6 +33,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int followers = 0;
   int following = 0;
   bool isLoading = false;
+  int closetLen = 0;
 
   @override
   void initState() {
@@ -48,6 +51,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           .collection('users')
           .doc(widget.uid)
           .get();
+
+      var closetSnap = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.uid)
+          .collection("closet")
+          .get();
+      closetLen = closetSnap.docs.length;
 
       // get post lENGTH
       var postSnap = await FirebaseFirestore.instance
@@ -69,12 +79,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       isLoading = false;
     });
-  }
-
-  toAddClothes() {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => AddClothesScreen(),
-    ));
   }
 
   String _usingCategory = "ALL";
@@ -104,13 +108,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             appBar: AppBar(
               backgroundColor: mobileBackgroundColor,
               title: Text(
-                userData['username'],
+                "마이 페이지",
               ),
               centerTitle: false,
             ),
             body: ListView(
               children: [
-
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
@@ -128,41 +131,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             flex: 1,
                             child: Column(
                               children: [
-                                Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                                Column(
                                   children: [
-                                    buildTouchColumn(postLen, "posts"),
-                                    buildStatColumn(followers, "카테고리 수"),
-                                    buildStatColumn(following, "좋아요 누른 수"),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    FirebaseAuth.instance.currentUser!.uid ==
-                                            widget.uid
-                                        ? FollowButton(
-                                            text: 'Sign Out',
-                                            backgroundColor:
-                                                mobileBackgroundColor,
-                                            textColor: primaryColor,
-                                            borderColor: Colors.grey,
-                                            function: () async {
-                                              await AuthMethods().logOut();
-                                              Navigator.of(context)
-                                                  .pushReplacement(
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const LoginScreen(),
-                                                ),
-                                              );
-                                            },
-                                          )
-                                        : Text(
-                                            "===")
+                                    Text(userData['username'],
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineMedium),
+                                    const Divider(),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        buildStatColumn(postLen, "게시물"),
+                                        buildStatColumn(closetLen, "나의 옷"),
+                                        //buildStatColumn(following, "좋아요 누른 수"),
+                                      ],
+                                    ),
                                   ],
                                 ),
                               ],
@@ -173,128 +158,250 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Container(
                         alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.only(
-                          top: 15,
-                        ),
-                        child: Text(
-                          userData['username'],
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.only(
                           top: 1,
                         ),
                         child: Text(
                           userData['bio'],
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ),
                     ],
                   ),
                 ),
-                
                 const Divider(),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      //mainCategpry Area
-                      Wrap(
-                        direction: Axis.horizontal,
-                        alignment: WrapAlignment.start,
-                        children: [
-                          mainCategoryButton("상의", Icons.checkroom),
-                          mainCategoryButton("하의", Icons.checkroom),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                Column(
+                ListView(
+
+                  padding: EdgeInsets.zero,
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
                   children: [
-                    if (_usingCategory != "ALL")
-                      StreamBuilder(
-                        stream: FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(widget.uid)
-                            .collection("closet")
-                            .where('nowCategory', isEqualTo: _usingCategory)
-                            .snapshots(),
-                        builder: (context,
-                            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                                snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          return snapshot.data!.docs.isEmpty
-                              ? Text("it's empty...")
-                              : ListView.builder(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  scrollDirection: Axis.vertical,
-                                  shrinkWrap: true,
-                                  itemCount: snapshot.data!.docs.length,
-                                  itemBuilder: (ctx, index) {
-                                    return ClothesCard(
-                                        snap: snapshot.data!.docs[index],
-                                        uid: widget.uid);
-                                  },
+                    Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(0, 1, 0, 0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: FlutterFlowTheme.of(context)
+                                  .secondaryBackground,
+                              shape: BoxShape.rectangle,
+                            ),
+                            child: InkWell(
+                              onTap: () async {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => MyPostScreen(
+                                      uid: widget.uid,
+                                    ),
+                                  ),
                                 );
-                        },
-                      )
-                    else // and if Category == ALL
-                      StreamBuilder(
-                        stream: FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(widget.uid)
-                            .collection("closet")
-                            .snapshots(),
-                        builder: (context,
-                            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                                snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          return snapshot.data!.docs.isEmpty
-                              ? Text("it's empty...")
-                              : ListView.builder(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  scrollDirection: Axis.vertical,
-                                  shrinkWrap: true,
-                                  itemCount: snapshot.data!.docs.length,
-                                  itemBuilder: (ctx, index) {
-                                    return ClothesCard(
-                                        snap: snapshot.data!.docs[index],
-                                        uid: widget.uid);
-                                  },
-                                );
-                        },
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        24, 0, 0, 0),
+                                    child: Text(
+                                      '회원정보 수정',
+                                      style: FlutterFlowTheme.of(context)
+                                          .bodyText1,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Align(
+                                      alignment: AlignmentDirectional(0.9, 0),
+                                      child: Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: Color(0xFF95A1AC),
+                                        size: 18,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
+                    ),
+                    Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(0, 1, 0, 0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: FlutterFlowTheme.of(context)
+                                  .secondaryBackground,
+                              shape: BoxShape.rectangle,
+                            ),
+                            child: InkWell(
+                              onTap: () async {
+                                await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => MyPostScreen(
+                                      uid: widget.uid,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        24, 0, 0, 0),
+                                    child: Text(
+                                      '날씨',
+                                      style: FlutterFlowTheme.of(context)
+                                          .bodyText1,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Align(
+                                      alignment: AlignmentDirectional(0.9, 0),
+                                      child: Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: Color(0xFF95A1AC),
+                                        size: 18,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(0, 1, 0, 0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: FlutterFlowTheme.of(context)
+                                  .secondaryBackground,
+                              shape: BoxShape.rectangle,
+                            ),
+                            child: InkWell(
+                              onTap: () async {
+                                await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => ClosetScreen(
+                                      uid: widget.uid,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        24, 0, 0, 0),
+                                    child: Text(
+                                      '내 옷장',
+                                      style: FlutterFlowTheme.of(context)
+                                          .bodyText1,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Align(
+                                      alignment: AlignmentDirectional(0.9, 0),
+                                      child: Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: Color(0xFF95A1AC),
+                                        size: 18,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(0, 1, 0, 0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: FlutterFlowTheme.of(context)
+                                  .secondaryBackground,
+                              shape: BoxShape.rectangle,
+                            ),
+                            child: InkWell(
+                              onTap: () async {
+                                await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => MyPostScreen(
+                                      uid: widget.uid,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        24, 0, 0, 0),
+                                    child: Text(
+                                      '내 게시물',
+                                      style: FlutterFlowTheme.of(context)
+                                          .bodyText1,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Align(
+                                      alignment: AlignmentDirectional(0.9, 0),
+                                      child: Icon(
+                                        Icons.arrow_forward_ios,
+                                        color: Color(0xFF95A1AC),
+                                        size: 18,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    FollowButton(
+                      text: '로그아웃',
+                      backgroundColor: mobileBackgroundColor,
+                      textColor: primaryColor,
+                      borderColor: Color.fromARGB(255, 255, 0, 0),
+                      function: () async {
+                        await AuthMethods().logOut();
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => const LoginScreen(),
+                          ),
+                        );
+                      },
+                    )
                   ],
                 ),
               ],
             ),
-            floatingActionButton: _getFAB(),
           );
-  }
-
-  Widget _getFAB() {
-    if (FirebaseAuth.instance.currentUser!.uid == widget.uid) {
-      return FloatingActionButton(
-        onPressed: toAddClothes,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      );
-    } else {
-      return Container();
-    }
   }
 
   Column buildStatColumn(int num, String label) {
