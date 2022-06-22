@@ -23,6 +23,7 @@ class fireStoreMethods {
           uid: uid,
           username: username,
           likes: [],
+          likedTimes: 0,
           postId: postId,
           datePublished: DateTime.now(),
           postUrl: photoUrl,
@@ -48,6 +49,7 @@ class fireStoreMethods {
           uid: uid,
           username: username,
           likes: [],
+          likedTimes: 0,
           postId: postId,
           datePublished: DateTime.now(),
           postUrl: photoUrl,
@@ -97,7 +99,7 @@ class fireStoreMethods {
     return res;
   }
 
-  Future<String> likePost(String postId, String uid, List likes) async {
+  Future<String> likePost(String postId, String uid, List likes, int nowLiked) async {
     String res = "좋아요/취소 도중에 문제가 생긴 것 같습니다...ㅠ";
     try {
       if (likes.contains(uid)) {
@@ -105,6 +107,11 @@ class fireStoreMethods {
         _firestore.collection('posts').doc(postId).update({
           'likes': FieldValue.arrayRemove([uid])
         });
+        
+        _firestore
+            .collection('posts')
+            .doc(postId)
+            .update({'likedTimes': nowLiked - 1});
 
         _firestore.collection('users').doc(uid).update({
           'following': FieldValue.arrayRemove([postId])
@@ -114,6 +121,11 @@ class fireStoreMethods {
         _firestore.collection('posts').doc(postId).update({
           'likes': FieldValue.arrayUnion([uid])
         });
+
+        _firestore
+            .collection('posts')
+            .doc(postId)
+            .update({'likedTimes': nowLiked + 1});
 
         _firestore.collection('users').doc(uid).update({
           'following': FieldValue.arrayUnion([postId])
@@ -177,8 +189,16 @@ class fireStoreMethods {
 
   //이제는 옷장 관련 기능
 
-  Future<String> uploadClothes(String talking, Uint8List file, String uid,
-      String clothesName, String nowCategory, String mainCategory, String subCategory, int maxT, int minT) async {
+  Future<String> uploadClothes(
+      String talking,
+      Uint8List file,
+      String uid,
+      String clothesName,
+      String nowCategory,
+      String mainCategory,
+      String subCategory,
+      int maxT,
+      int minT) async {
     String stateText = "문제가 생긴 것 같습니다ㅠ";
     try {
       String photoUrl =
@@ -255,18 +275,24 @@ class fireStoreMethods {
     String clothesUid,
   ) async {
     try {
-      DocumentSnapshot snap =
-          await _firestore.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection("closet").doc(clothesUid).get();
+      DocumentSnapshot snap = await _firestore
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection("closet")
+          .doc(clothesUid)
+          .get();
       int oldTimes = (snap.data()! as dynamic)['usedTimes'];
 
       await _firestore
-        .collection('users').doc(FirebaseAuth.instance.currentUser!.uid).collection("closet").doc(clothesUid)
-        .update({'usedTimes': oldTimes + 1});
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection("closet")
+          .doc(clothesUid)
+          .update({'usedTimes': oldTimes + 1});
     } catch (e) {
       print(e.toString());
     }
   }
-
 
   Future<void> removeCategory(
     String categoryName,

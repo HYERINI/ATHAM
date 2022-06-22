@@ -133,9 +133,10 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
           context,
           'Posted!',
         );
-        Navigator.pop(context);
+        clearImage();
       } else {
         showSnackBar(context, res);
+        clearImage();
       }
     } catch (err) {
       setState(() {
@@ -145,8 +146,8 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
         context,
         err.toString(),
       );
+      clearImage();
     }
-    Navigator.pop(context);
   }
 
   void clearImage() {
@@ -169,248 +170,251 @@ class _AddClothesScreenState extends State<AddClothesScreen> {
     final UserProvider userProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
-            appBar: AppBar(
-              backgroundColor: mobileBackgroundColor,
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: clearImage,
-              ),
-              title: const Text(
-                '옷 등록페이지',
-              ),
-              centerTitle: false,
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () => postClothes(
-                      userProvider.getUser.uid,
-                      userProvider.getUser.username,
-                      userProvider.getUser.photoUrl,
-                      selectedMainCategory,
-                      selectedSubCategory,
-                      selectedMaxT,
-                      selectedMinT),
-                  child: const Text(
-                    "등록하기!",
-                    style: TextStyle(
-                        color: Colors.blueAccent,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0),
-                  ),
-                )
-              ],
+      appBar: AppBar(
+        backgroundColor: mobileBackgroundColor,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: clearImage,
+        ),
+        title: const Text(
+          '옷 등록페이지',
+        ),
+        centerTitle: false,
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => postClothes(
+                userProvider.getUser.uid,
+                userProvider.getUser.username,
+                userProvider.getUser.photoUrl,
+                selectedMainCategory,
+                selectedSubCategory,
+                selectedMaxT,
+                selectedMinT),
+            child: const Text(
+              "등록하기!",
+              style: TextStyle(
+                  color: Colors.blueAccent,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.0),
             ),
-            // POST FORM
-            body: ListView(
-              children: <Widget>[
-                isLoading
-                    ? const LinearProgressIndicator()
-                    : const Padding(padding: EdgeInsets.only(top: 0.0)),
-                const Divider(),
-                Column(
-                  //mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  //crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.all(10),
-                      height: 150,
-                      alignment: Alignment.topCenter,
-                      child: Image.memory(
-                        widget.file,
-                        fit: BoxFit.fitHeight,
-                      ),
-                    ),
-
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Text(
-                            "옷 이름:",
-                            style: GoogleFonts.jua(fontSize: 17),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 4,
-                          child: TextField(
-                            controller: _clothesNameController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: '옷의 이름은?',
-                            ),
-                            maxLines: 1,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(7, 0, 7, 0),
-                      child: Divider(color: Colors.grey,)
-                    ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "옷에 대한 설명: ",
-                        style: GoogleFonts.jua(fontSize: 17),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                      child: TextField(
-                        controller: _descriptionController,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: '이 옷에 대해 설명해보세요!',
-                        ),
-                        maxLines: 4,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 3,
-                          child: SizedBox(
-                              width: MediaQuery.of(context).size.width * 1,
-                              child: Text(
-                                "메인 카테고리",
-                                style: GoogleFonts.jua(fontSize: 17),
-                              )),
-                        ),
-                        Expanded(
-                          flex: 7,
-                          child: SizedBox(
-                              width: MediaQuery.of(context).size.width * 1,
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton(
-                                  value: selectedMainCategory,
-                                  items: mainCategoryList.map((String value) {
-                                    return DropdownMenuItem(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
-                                  onChanged: (String? value) {
-                                    chooseSubList(value);
-                                    setState(() {
-                                      selectedSubCategory = subCategoryList[0];
-                                      selectedMainCategory = value!;
-                                    });
-                                  },
-                                ),
-                              )),
-                        ),
-                        
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 3,
-                          child: SizedBox(
-                              width: MediaQuery.of(context).size.width * 1,
-                              child: Text(
-                                "하위 카테고리",
-                                style: GoogleFonts.jua(fontSize: 17),
-                              )),
-                        ),
-                        Expanded(
-                          flex: 7,
-                          child: SizedBox(
-                              width: MediaQuery.of(context).size.width * 1,
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton(
-                                  value: selectedSubCategory,
-                                  items: subCategoryList.map((String value) {
-                                    return DropdownMenuItem(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
-                                  onChanged: (String? value) {
-                                    setState(() {
-                                      selectedSubCategory = value!;
-                                    });
-                                  },
-                                ),
-                              )),
-                        ),
-                      ],
-                    ),
-                    const Divider(color: Colors.grey,),
-                    Text(
-                      "입을 수 있는 온도는?",
+          )
+        ],
+      ),
+      // POST FORM
+      body: ListView(
+        children: <Widget>[
+          isLoading
+              ? const LinearProgressIndicator()
+              : const Padding(padding: EdgeInsets.only(top: 0.0)),
+          const Divider(),
+          Column(
+            //mainAxisAlignment: MainAxisAlignment.spaceAround,
+            //crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.all(10),
+                height: 150,
+                alignment: Alignment.topCenter,
+                child: Image.memory(
+                  widget.file,
+                  fit: BoxFit.fitHeight,
+                ),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Text(
+                      "옷 이름:",
                       style: GoogleFonts.jua(fontSize: 17),
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            alignment: Alignment.center,
-                            child: Text(
-                                "최저 기온",
-                                style: GoogleFonts.jua(fontSize: 14),
-                              ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            alignment: Alignment.center,
-                            child: Text(
-                                "최고 기온",
-                                style: GoogleFonts.jua(fontSize: 14),
-                              ),
-                          ),
-                        ),
-                      ],
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: TextField(
+                      controller: _clothesNameController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: '옷의 이름은?',
+                      ),
+                      maxLines: 1,
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width * 1,
-                            child: NumberPicker(
-                              value: selectedMinT,
-                              minValue: -100,
-                              maxValue: 100,
-                              step: 1,
-                              haptics: true,
-                              onChanged: (value) {
-                                if (selectedMaxT - value >= 0) {
-                                  setState(() {
-                                    selectedMinT = value;
-                                  });
-                                }
-                              },
-                            ),
-                          ),
-                        ),
-                        const Divider(color: Colors.grey,),
-                        Expanded(
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width * 1,
-                            child: NumberPicker(
-                              value: selectedMaxT,
-                              minValue: -100,
-                              maxValue: 100,
-                              step: 1,
-                              haptics: true,
-                              onChanged: (value) {
-                                if (value - selectedMinT >= 0) {
-                                  setState(() {
-                                    selectedMaxT = value;
-                                  });
-                                }
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                  ),
+                ],
+              ),
+              Container(
+                  margin: EdgeInsets.fromLTRB(7, 0, 7, 0),
+                  child: Divider(
+                    color: Colors.grey,
+                  )),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "옷에 대한 설명: ",
+                  style: GoogleFonts.jua(fontSize: 17),
                 ),
-              ],
-            ),
-          );
+              ),
+              Container(
+                margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                child: TextField(
+                  controller: _descriptionController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: '이 옷에 대해 설명해보세요!',
+                  ),
+                  maxLines: 4,
+                ),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 1,
+                        child: Text(
+                          "메인 카테고리",
+                          style: GoogleFonts.jua(fontSize: 17),
+                        )),
+                  ),
+                  Expanded(
+                    flex: 7,
+                    child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 1,
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton(
+                            value: selectedMainCategory,
+                            items: mainCategoryList.map((String value) {
+                              return DropdownMenuItem(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                            onChanged: (String? value) {
+                              chooseSubList(value);
+                              setState(() {
+                                selectedSubCategory = subCategoryList[0];
+                                selectedMainCategory = value!;
+                              });
+                            },
+                          ),
+                        )),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 1,
+                        child: Text(
+                          "하위 카테고리",
+                          style: GoogleFonts.jua(fontSize: 17),
+                        )),
+                  ),
+                  Expanded(
+                    flex: 7,
+                    child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 1,
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton(
+                            value: selectedSubCategory,
+                            items: subCategoryList.map((String value) {
+                              return DropdownMenuItem(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                            onChanged: (String? value) {
+                              setState(() {
+                                selectedSubCategory = value!;
+                              });
+                            },
+                          ),
+                        )),
+                  ),
+                ],
+              ),
+              const Divider(
+                color: Colors.grey,
+              ),
+              Text(
+                "입을 수 있는 온도는?",
+                style: GoogleFonts.jua(fontSize: 17),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "최저 기온",
+                        style: GoogleFonts.jua(fontSize: 14),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "최고 기온",
+                        style: GoogleFonts.jua(fontSize: 14),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 1,
+                      child: NumberPicker(
+                        value: selectedMinT,
+                        minValue: -100,
+                        maxValue: 100,
+                        step: 1,
+                        haptics: true,
+                        onChanged: (value) {
+                          if (selectedMaxT - value >= 0) {
+                            setState(() {
+                              selectedMinT = value;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  const Divider(
+                    color: Colors.grey,
+                  ),
+                  Expanded(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 1,
+                      child: NumberPicker(
+                        value: selectedMaxT,
+                        minValue: -100,
+                        maxValue: 100,
+                        step: 1,
+                        haptics: true,
+                        onChanged: (value) {
+                          if (value - selectedMinT >= 0) {
+                            setState(() {
+                              selectedMaxT = value;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

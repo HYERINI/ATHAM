@@ -3,6 +3,7 @@ import 'package:atham/utils/utils.dart';
 import 'package:atham/widgets/marquee_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:marquee/marquee.dart';
 
@@ -67,7 +68,7 @@ class ClothesCard extends StatelessWidget {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(left: 16),
+              padding: const EdgeInsets.only(left: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -80,9 +81,8 @@ class ClothesCard extends StatelessWidget {
                         ),
                         TextSpan(
                             text: snap.data()['clothesName'],
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            )),
+                            style: GoogleFonts.jua(),
+                        )
                       ],
                     ),
                   ),
@@ -92,20 +92,13 @@ class ClothesCard extends StatelessWidget {
                         TextSpan(
                           text: '옷 카테고리: ',
                         ),
-                      ],
-                    ),
-                  ),
-                  RichText(
-                    text: TextSpan(
-                      children: [
                         TextSpan(
                             text: (snap.data()['mainCategory'] == null ?"null" : snap.data()['mainCategory']) + " > " + (snap.data()['subCategory'] == null ? "null" : snap.data()['subCategory']),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            )),
+                            style: GoogleFonts.jua(),),
                       ],
                     ),
                   ),
+                  
                   RichText(
                     text: TextSpan(
                       children: [
@@ -114,9 +107,19 @@ class ClothesCard extends StatelessWidget {
                         ),
                         TextSpan(
                             text: snap.data()['talking'],
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            )),
+                            style: GoogleFonts.jua(),),
+                      ],
+                    ),
+                  ),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: '착용 기온: ',
+                        ),
+                        TextSpan(
+                            text: (snap.data()['minT'] == null ? "null" : snap.data()['minT'].toString()) + " ~ " + (snap.data()['maxT'] == null ? "null" : snap.data()['maxT'].toString()),
+                            style: GoogleFonts.jua(),),
                       ],
                     ),
                   ),
@@ -128,16 +131,16 @@ class ClothesCard extends StatelessWidget {
                         ),
                         TextSpan(
                             text: snap.data()['usedTimes'].toString(),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            )),
+                            style: GoogleFonts.jua(),),
                       ],
                     ),
                   ),
+                  
+                  
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
-                      DateFormat.yMMMd().format(
+                      "등록일: " + DateFormat.yMMMd().format(
                         snap.data()['datePublished'].toDate(),
                       ),
                       style: const TextStyle(

@@ -186,6 +186,7 @@ class _PostCardState extends State<PostCard> {
                 widget.snap['postId'].toString(),
                 user.uid,
                 widget.snap['likes'],
+                widget.snap['likes'].length
               );
               setState(() {
                 isLikeAnimating = true;
@@ -244,6 +245,7 @@ class _PostCardState extends State<PostCard> {
                     widget.snap['postId'].toString(),
                     user.uid,
                     widget.snap['likes'],
+                    widget.snap['likes'].length
                   ),
                 ),
               ),

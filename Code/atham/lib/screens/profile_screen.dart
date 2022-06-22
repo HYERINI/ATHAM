@@ -6,6 +6,7 @@ import 'package:atham/screens/add_post_screen.dart';
 import 'package:atham/screens/closet_screen.dart';
 import 'package:atham/screens/my_post_screen.dart';
 import 'package:atham/utils/global_var.dart';
+import 'package:atham/weather/loading_screen.dart';
 import 'package:atham/widgets/category_list.dart';
 import 'package:atham/widgets/clothes_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -190,62 +191,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             child: InkWell(
                               onTap: () async {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => MyPostScreen(
-                                      uid: widget.uid,
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        24, 0, 0, 0),
-                                    child: Text(
-                                      '회원정보 수정',
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyText1,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Align(
-                                      alignment: AlignmentDirectional(0.9, 0),
-                                      child: Icon(
-                                        Icons.arrow_forward_ios,
-                                        color: Color(0xFF95A1AC),
-                                        size: 18,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(0, 1, 0, 0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context)
-                                  .secondaryBackground,
-                              shape: BoxShape.rectangle,
-                            ),
-                            child: InkWell(
-                              onTap: () async {
                                 await Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) => MyPostScreen(
-                                      uid: widget.uid,
+                                    builder: (context) => LoadingScreen(
                                     ),
                                   ),
                                 );

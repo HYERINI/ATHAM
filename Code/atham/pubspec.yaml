@@ -57,6 +57,9 @@ dependencies:
   hooks_riverpod: ^1.0.4
   material_floating_search_bar: ^0.3.7
   sizer: ^2.0.15
+  geolocator: ^8.2.1
+  http: ^0.13.4
+  flutter_spinkit: ^5.1.0
   
 
 dev_dependencies:

@@ -34,10 +34,19 @@ class _TodayPostScreenState extends State<TodayPostScreen> {
           : AppBar(
               backgroundColor: mobileBackgroundColor,
               centerTitle: false,
-              title: Image.asset(
-                'assets/AthamLogo.png',
-                //color: primaryColor,
-                height: 80,
+              title: Row(
+                children: [
+                  Image.asset(
+                    'assets/AthamLogo.png',
+                    //color: primaryColor,
+                    height: 80,
+                  ),
+                  const VerticalDivider(),
+                  Text(
+                    "오늘의 코디 게시물",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ],
               ),
               actions: [
                 IconButton(

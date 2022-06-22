@@ -52,9 +52,9 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
     return Scaffold(
       body: PageView(
         children: [
+          TodayMainScreen(),
           const TodayPostScreen(),
           const WhenPostScreen(),
-          TodayMainScreen(),
           const LikedPostScreen(),
           ClosetScreen(
             uid: FirebaseAuth.instance.currentUser!.uid,
@@ -69,7 +69,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
         
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.today,
+              Icons.home,
               color: (_page == 0) ? primaryColor : secondaryColor,
             ),
             label: '',
@@ -78,14 +78,14 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
           
           BottomNavigationBarItem(
               icon: Icon(
-                Icons.question_mark ,
+                Icons.camera,
                 color: (_page == 1) ? primaryColor : secondaryColor,
               ),
               label: '',
               backgroundColor: primaryColor),
           BottomNavigationBarItem(
               icon: Icon(
-                Icons.home,
+                Icons.question_mark,
                 color: (_page == 2) ? primaryColor : secondaryColor,
               ),
               label: '',

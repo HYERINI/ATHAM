@@ -2,6 +2,9 @@ import 'package:atham/flutter_flow/flutter_flow_theme.dart';
 import 'package:atham/methods/firestore_methods.dart';
 import 'package:atham/screens/profile_screen.dart';
 import 'package:atham/utils/utils.dart';
+import 'package:atham/weather/loading_screen.dart';
+import 'package:atham/weather/weather.dart';
+import 'package:atham/widgets/for_you_clothes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -10,6 +13,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:atham/utils/colors.dart';
 import 'package:atham/utils/global_var.dart';
 import 'package:atham/widgets/post_card.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class TodayMainScreen extends StatefulWidget {
@@ -29,6 +33,18 @@ class _TodayMainScreenState extends State<TodayMainScreen> {
   List<String> musinsaUrl = [];
 
   bool isLoading = false;
+
+  //weather Zone
+  WeatherModel weather = WeatherModel();
+  var weatherData;
+  int temperature = 0;
+  String weatherText = "";
+  String cityName = '';
+  String weatherIcon = '';
+  String weatherMessage = '';
+  int maxTempInt = 0;
+  int minTempInt = 0;
+  //weather Zone Out
 
   @override
   void initState() {
@@ -70,7 +86,34 @@ class _TodayMainScreenState extends State<TodayMainScreen> {
         musinsaPhotoUrlList.add(rankingData[nowPhotoName]);
       }
 
-      setState(() {});
+      //weather loading zone
+      //weather loading zone
+      //weather loading zone
+      weatherData = await WeatherModel().getLocationWeather();
+      if (weatherData == null) {
+        temperature = 0;
+        weatherIcon = 'Error';
+        weatherMessage = 'Unable to get weather data';
+        cityName = '';
+        return;
+      }
+
+      double temp = weatherData['main']['temp'];
+      temperature = temp.toInt();
+      double maxTempDouble = weatherData['main']['temp_max'];
+      maxTempInt = maxTempDouble.toInt();
+      double minTempDouble = weatherData['main']['temp_min'];
+      minTempInt = minTempDouble.toInt();
+      int condition = weatherData['weather'][0]['id'];
+      weatherMessage = weather.getMessage(temperature);
+      weatherIcon = weather.getWeatherIcon(condition);
+      cityName = weatherData['name'];
+      weatherText = weatherData['weather'][0]['main'];
+
+      //weather loading zone Out
+      //weather loading zone Out
+      //weather loading zone Out
+
     } catch (e) {
       showSnackBar(
         context,
@@ -99,10 +142,19 @@ class _TodayMainScreenState extends State<TodayMainScreen> {
                 : AppBar(
                     backgroundColor: mobileBackgroundColor,
                     centerTitle: false,
-                    title: Image.asset(
-                      'assets/AthamLogo.png',
-                      //color: primaryColor,
-                      height: 80,
+                    title: Row(
+                      children: [
+                        Image.asset(
+                          'assets/AthamLogo.png',
+                          //color: primaryColor,
+                          height: 80,
+                        ),
+                        const VerticalDivider(),
+                        Text(
+                          "Today",
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ],
                     ),
                     actions: [
                       IconButton(
@@ -124,7 +176,7 @@ class _TodayMainScreenState extends State<TodayMainScreen> {
             body: ListView(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(5),
                   child: Text(
                     DateFormat.yMMMd().format(
                       DateTime.now(),
@@ -135,23 +187,113 @@ class _TodayMainScreenState extends State<TodayMainScreen> {
                     ),
                   ),
                 ),
+                const Divider(
+                  color: Colors.grey,
+                ),
+                //weather zone
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: SizedBox(
-                    height: 150,
+                    height: 190,
                     width: width,
-                    child: Row(children: [
-                      //오늘의 날씨 아이콘
-                      Container(),
-
-                      //최고, 현재, 최저 기온
-                      Row(children: []),
-                    ]),
+                    child: Column(
+                      children: [
+                        Padding(
+                          // city
+                          padding: EdgeInsets.only(bottom: 1),
+                          child: Text(
+                            cityName.toUpperCase(),
+                            style: GoogleFonts.carterOne(
+                                fontSize: 40, fontWeight: FontWeight.w400),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 1),
+                              child: Text(
+                                temperature.toString() + "도",
+                                style: GoogleFonts.monoton(fontSize: 40),
+                                maxLines: 1,
+                              ),
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.keyboard_arrow_up,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1!
+                                          .color,
+                                    ),
+                                    Text(
+                                      maxTempInt.toString() + "도",
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.keyboard_arrow_down,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1!
+                                          .color,
+                                    ),
+                                    Text(
+                                      minTempInt.toString() + "도",
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Container(),
+                            Text(
+                              weatherText + weatherIcon,
+                              style: GoogleFonts.lato(fontSize: 30),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              weatherMessage,
+                              maxLines: 2,
+                              style: GoogleFonts.notoSans(fontSize: 15),
+                            ),
+                            Container(
+                              alignment: Alignment.center,
+                              child: ElevatedButton(
+                                child: Text("지금과 어울리는 옷은?"),
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => ForYouCLothes(
+                                        MaxT: maxTempInt,
+                                        MinT: minTempInt,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
+                ),
+                const Divider(
+                  color: Colors.grey,
                 ),
                 //인기 게시물
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(12.0),
                   child: Column(
                     children: [
                       Text(
@@ -172,10 +314,12 @@ class _TodayMainScreenState extends State<TodayMainScreen> {
                     ],
                   ),
                 ),
-
+                const Divider(
+                  color: Colors.grey,
+                ),
                 //실시간 인기 상품
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(12.0),
                   child: Column(
                     children: [
                       Text("실시간 인기 Top3 패션",
@@ -220,13 +364,12 @@ class _TodayMainScreenState extends State<TodayMainScreen> {
           children: [
             Text(
               usersNameList[thisIndex],
+              style: Theme.of(context).textTheme.titleSmall,
               maxLines: 2,
             ),
             Row(
-              children: [
-                Icon(Icons.heart_broken),
-                Text(likedTImesList[thisIndex])
-              ],
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [Icon(Icons.favorite), Text(likedTImesList[thisIndex])],
             )
           ],
         )

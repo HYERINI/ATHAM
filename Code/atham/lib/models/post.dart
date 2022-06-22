@@ -10,6 +10,7 @@ class Post {
   final String postUrl;
   final String profImage;
   final int postType;
+  final int likedTimes;
   // 1: 오늘의 코디, 2: 상황별 게시물
 
   const Post({
@@ -22,6 +23,7 @@ class Post {
     required this.postUrl,
     required this.profImage,
     required this.postType,
+    required this.likedTimes,
   });
 
   static Post fromSnap(DocumentSnapshot snap) {
@@ -35,7 +37,8 @@ class Post {
         username: snapshot["username"],
         postUrl: snapshot['postUrl'],
         profImage: snapshot['profImage'],
-        postType: snapshot['postType']);
+        postType: snapshot['postType'],
+        likedTimes: snapshot['likedTimes']);
   }
 
   Map<String, dynamic> toJson() => {
@@ -48,5 +51,6 @@ class Post {
         'postUrl': postUrl,
         'profImage': profImage,
         'postType': postType,
+        'likedTimes': likedTimes
       };
 }

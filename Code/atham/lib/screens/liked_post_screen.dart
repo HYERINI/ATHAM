@@ -58,11 +58,20 @@ class _LikedPostScreenState extends State<LikedPostScreen> {
                 : AppBar(
                     backgroundColor: mobileBackgroundColor,
                     centerTitle: false,
-                    title: Image.asset(
-                      'assets/AthamLogo.png',
-                      //color: primaryColor,
-                      height: 80,
-                    ),
+                    title: Row(
+                children: [
+                  Image.asset(
+                    'assets/AthamLogo.png',
+                    //color: primaryColor,
+                    height: 80,
+                  ),
+                  const VerticalDivider(),
+                  Text(
+                    "좋아요를 누른 게시물",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ],
+              ),
                     actions: [
                       IconButton(
                         icon: const Icon(
